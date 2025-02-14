@@ -1,0 +1,113 @@
+// ignore_for_file: unused_field, unused_import
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:meta/meta.dart';
+import 'package:pinterest/presentation/homeScreen/cubit/home_cubit.dart';
+import 'package:pinterest/presentation/homeScreen/widgets/text_button.dart';
+import 'package:pinterest/presentation/homeScreen/widgets/tile.dart';
+import 'package:flutter_media_downloader/flutter_media_downloader.dart';
+
+class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
+  final downloadar = MediaDownload();
+
+  @override
+  Widget build(BuildContext context) {
+    return  BlocProvider(
+        create: (context) => HomeCubit(),
+        child: BlocBuilder<HomeCubit, HomeState>(
+          builder: (context, state) {
+            final cubit = context.read<HomeCubit>();
+            return state is HomeLoading
+                ? const CircularProgressIndicator()
+                : state is HomeSuccess
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              MasonryGridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2),
+                                crossAxisSpacing: 8,
+                                itemCount: state.data.photos.length,
+                                mainAxisSpacing: 8,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      downloadar.downloadMedia(
+                                          context,
+                                          state
+                                              .data.photos[index].src.original);
+                                      print("downloded");
+                                    },
+                                    child: Tile(
+                                      index: index,
+                                      url:
+                                          state.data.photos[index].src.original,
+                                    ),
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                height: 50,
+                                child: ListView.separated(
+                                  separatorBuilder: (context, index) {
+                                    return const SizedBox(
+                                      width: 20,
+                                    );
+                                  },
+                                  itemCount: 8,
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    int value = index + 1;
+
+                                    return InkWell(
+                                      onTap: () {
+                                        cubit.fetchdata(value);
+                                      },
+                                      child: Container(
+                                        width: 20,
+                                        height: 20,
+                                        decoration: BoxDecoration(
+                                          //color: Colors.black,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          value.toString(),
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : state is HomeError
+                        ? Center(
+                            child: Text(state.error),
+                          )
+                        : const Center(
+                            child: Text("Somthing is fishy"),
+                          );
+          },
+        ),
+
+    );
+  }
+}
