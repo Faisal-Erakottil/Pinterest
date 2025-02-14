@@ -7,15 +7,19 @@ import 'package:pinterest/model/model.dart';
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
+  int selectedPage = 1;
   HomeCubit() : super(HomeInitial()) {
     fetchdata(1);
   }
 
   fetchdata(int page) async {
     print("function is woeking");
-    const token = "L9d8M3itFrErAD5MbxCbMHWja51AS0kr1YqNzWSoj0NdG07MFCYEQEy8";
+
+    selectedPage = page;
     emit(HomeLoading());
+
     final url = "https://api.pexels.com/v1/curated?page=$page&per_page=10";
+    const token = "L9d8M3itFrErAD5MbxCbMHWja51AS0kr1YqNzWSoj0NdG07MFCYEQEy8";
 
     final headers = {
       "Authorization": token,

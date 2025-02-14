@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pinterest/presentation/botttomBar/bottombar.dart';
-import 'package:pinterest/presentation/homeScreen/home.dart';
 import 'package:pinterest/presentation/splashScreen/splash.dart';
 
 void main() async {
@@ -20,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
         useMaterial3: true,
       ),
-      home:  const Splash(),
+      home: const Splash(),
     );
   }
 }
