@@ -10,7 +10,7 @@ class BootombarCubit extends Cubit<BootombarState> {
 
   updateIndex(int index) {
     selectedIndex = index;
-    print(selectedIndex);
+    //print(selectedIndex);
     emit(BootombarInitial());
   }
 }

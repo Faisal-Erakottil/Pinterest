@@ -34,7 +34,11 @@ class Photos {
   Map<String, dynamic> toJson() => {
         "page": page,
         "per_page": perPage,
-        "photos": List<dynamic>.from(photos.map((x) => x.toJson())),
+        "photos": List<dynamic>.from(
+          photos.map(
+            (x) => x.toJson(),
+          ),
+        ),
         "total_results": totalResults,
         "next_page": nextPage,
       };

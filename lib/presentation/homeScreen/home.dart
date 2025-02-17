@@ -17,86 +17,107 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<HomeCubit>();
           return state is HomeLoading
-              ? const CircularProgressIndicator()
+              ? const Center(child: CircularProgressIndicator())
               : state is HomeSuccess
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            MasonryGridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2),
-                              crossAxisSpacing: 8,
-                              itemCount: state.data.photos.length,
-                              mainAxisSpacing: 8,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    downloadar.downloadMedia(context,
-                                        state.data.photos[index].src.original);
-                                    print("downloded");
-                                  },
-                                  child: Tile(
-                                    index: index,
-                                    url: state.data.photos[index].src.original,
-                                  ),
-                                );
-                              },
-                            ),
-                            SizedBox(
-                              height: 50,
-                              child: ListView.separated(
-                                separatorBuilder: (context, index) {
-                                  return const SizedBox(width: 20);
-                                },
-                                itemCount: 8,
-                                scrollDirection: Axis.horizontal,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  int value = index + 1;
-
-                                  return InkWell(
-                                    onTap: () {
-                                      cubit.fetchdata(value);
-                                    },
-                                    child: Container(
-                                      width: 20,
-                                      height: 20,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: cubit.selectedPage == value
-                                            ? Colors.blue
-                                            : Colors.transparent,
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 2,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  MasonryGridView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    gridDelegate:
+                                        const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2),
+                                    crossAxisSpacing: 8,
+                                    itemCount: state.data.photos.length,
+                                    mainAxisSpacing: 8,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          downloadar.downloadMedia(
+                                              context,
+                                              cubit.photosList[index].src
+                                                  .original);
+                                          // print("downloded");
+                                        },
+                                        child: Tile(
+                                          index: index,
+                                          url: cubit
+                                              .photosList[index].src.original,
                                         ),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        value.toString(),
-                                        style: const TextStyle(
-                                            color: Colors.white),
-                                      ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(height: 10),
+                                  // ElevatedButton(
+                                  //   onPressed: () {
+                                  //     cubit.fetchdata(cubit.selectedPage + 1);
+                                  //   },
+                                  //   child: const Text("Next >>"),
+                                  // ),
+                                  //const SizedBox(height: 20),
+
+                                  SizedBox(
+                                    height: 50,
+                                    child: ListView.separated(
+                                      separatorBuilder: (context, index) {
+                                        return const SizedBox(width: 20);
+                                      },
+                                      itemCount: 8,
+                                      scrollDirection: Axis.horizontal,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        int value = index + 1;
+
+                                        return InkWell(
+                                          onTap: () {
+                                            cubit.fetchdata(value);
+                                          },
+                                          child: Container(
+                                            width: 20,
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: cubit.selectedPage == value
+                                                  ? Colors.blue
+                                                  : Colors.transparent,
+                                              border: Border.all(
+                                                color: Colors.white,
+                                                width: 2,
+                                              ),
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              value.toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  );
-                                },
+                                  )
+                                ],
                               ),
-                            )
-                          ],
-                        ),
+                            ),
+                          ),
+                        ],
                       ),
                     )
                   : state is HomeError
                       ? Center(
-                          child: Text(state.error),
+                          child: Center(child: Text(state.error)),
                         )
                       : const Center(
-                          child: Text("Somthing is fishy"),
+                          child: Center(
+                            child: Text("Somthing went Wrong"),
+                          ),
                         );
         },
       ),
